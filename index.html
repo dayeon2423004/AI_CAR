@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RC Car Control</title>
+</head>
+<body>
+    <h1>RC Car Control</h1>
+    <button onclick="sendCommand('forward')">Forward</button>
+    <button onclick="sendCommand('backward')">Backward</button>
+    <button onclick="sendCommand('stop')">Stop</button>
+    <button onclick="sendCommand('left')">Left</button>
+    <button onclick="sendCommand('right')">Right</button>
+
+    <h2>Video Feed</h2>
+    <img src="{{ url_for('video_feed') }}" alt="Video Feed" style="width:640px;height:480px;"/>
+
+    <script>
+        function sendCommand(direction) {
+            fetch('/control', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'direction=' + direction
+            });
+        }
+    </script>
+</body>
+</html>
