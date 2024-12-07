@@ -206,4 +206,8 @@ flask_thread.start()
 
 # 메인 스레드에서 다른 작업을 수행할 수 있음
 car_thread.join()  # 자동차 제어 스레드가 종료될 때까지 대기
+<<<<<<< HEAD
 flask_thread.join()  # Flask 서버 스레드가 종료될 때까지 대기
+=======
+flask_thread.join()  # Flask 서버 스레드가 종료될 때까지 대기
+>>>>>>> bcd4a3bf1a782fdb108e414fd1f180995e8ac064
