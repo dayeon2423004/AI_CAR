@@ -8,10 +8,10 @@ import shutil
 import pandas as pd
 
 # 경로 설정
-image_folder = "/home/kimdayeon/Desktop/sorted_images/folder_14"  # 원본 이미지 폴더
-output_folder = "/home/kimdayeon/Desktop/output_images"  # 결과 저장 폴더
-output_csv = "/home/kimdayeon/Desktop/angles.csv"  # CSV 파일 경로
-save_folder = "/home/kimdayeon/Desktop/renamed_images9"  # 이름 변경된 이미지 저장 폴더
+image_folder = "C:\\Users\\USER\\Desktop\\sorted_images"  # 원본 이미지 폴더
+output_folder = "C:\\Users\\USER\\Desktop\\전처리 완료 폴더2"  # 결과 저장 폴더
+output_csv = "C:\\Users\\USER\\Desktop.csv"  # CSV 파일 경로
+save_folder = "C:\\Users\\USER\\Desktop\\전처리 완료 폴더"  # 이름 변경된 이미지 저장 폴더
 
 # 결과 저장 폴더가 없으면 생성
 mask_folder = os.path.join(output_folder, 'Masks')
