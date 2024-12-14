@@ -66,11 +66,12 @@ def calculate_angles(image_path):
             angle = angle % 180
             angles.append(angle)
 
-    # 평균 각도 계산
+    # 평균 각도 계산 및 90도 추가
     if angles:
         mean_angle = np.mean(angles)
         rounded_angle = round(mean_angle / 20) * 20
-        return rounded_angle % 180
+        adjusted_angle = (rounded_angle + 90) % 180  # 90도 추가
+        return adjusted_angle
     return None
 
 # 이미지 전처리 및 각도 계산 후 CSV 저장
