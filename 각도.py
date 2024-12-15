@@ -1,71 +1,73 @@
 import cv2
 import numpy as np
-import math
 import os
 import csv
+import math
 
-# 폴더 내 모든 이미지의 각도를 계산하고 CSV에 저장
-image_folder = "/home/kimdayeon/Desktop/clean"  # 이미지가 있는 폴더 경로
-output_csv = "/home/kimdayeon/Desktop/angles.csv"  # 결과를 저장할 CSV 파일 경로
+# 경로 설정
+image_folder = "C:\\Users\\USER\\Desktop\\120"  # 원본 이미지 폴더
+output_csv = "C:\\Users\\USER\\Desktop\\output1.csv"  # 결과 저장 CSV 파일 경로
 
-def calculate_angles(image_path):
-    """이미지에서 직선을 검출하고 각도를 계산."""
-    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    if img is None:
-        return None  # 이미지 로드 실패 시 None 반환
+# 이미지에서 직선의 각도를 계산하는 함수 (30도 단위로 계산)
+def calculate_angle(image_path):
+    """이미지에서 직선의 각도를 계산"""
+    image = cv2.imread(image_path)
+    if image is None:
+        print(f"Image not found: {image_path}")
+        return None
+    
+    # 이미지를 회색조로 변환
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Gaussian 블러 적용
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-    # 엣지 감지 (Canny Edge Detection)
-    edges = cv2.Canny(img, 50, 150, apertureSize=3)
-
-    # 허프 변환을 이용한 직선 검출
-    lines = cv2.HoughLines(edges, 1, np.pi / 180, 100)
-
+    # 엣지 검출
+    edges = cv2.Canny(blurred, 50, 150, apertureSize=3)
+    
+    # Hough 변환으로 직선 검출 (HoughLinesP 사용)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=100, minLineLength=50, maxLineGap=10)
+    
     angles = []
     if lines is not None:
-        for rho, theta in lines[:, 0]:
-            # 각도를 계산 (라디안을 도로 변환)
-            angle = math.degrees(theta)
-            # 각도를 0 ~ 180도 범위로 조정
-            angle = angle % 180
+        for x1, y1, x2, y2 in lines[:, 0]:
+            # 각도 계산
+            angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
+            angle = angle % 180  # 0 ~ 180도 범위로 조정
             angles.append(angle)
-
-    # 평균 각도 계산
+    
+    # 평균 각도 계산 후 30도 단위로 반올림
     if angles:
         mean_angle = np.mean(angles)
-        # 20도 단위로 반올림
-        rounded_angle = round(mean_angle / 20) * 20
-        # 0 ~ 180도 범위로 조정
-        return rounded_angle % 180
+        rounded_angle = round(mean_angle / 30) * 30  # 30도 단위로 반올림
+        return rounded_angle
     return None
 
-def process_images(folder_path, output_file):
-    """폴더 내 모든 이미지를 처리하고 각도를 CSV에 저장."""
-    # 출력 경로의 디렉터리가 없으면 생성
-    if output_file.strip() == "" or not os.path.basename(output_file):
-        raise ValueError("Invalid output file path. Ensure it includes a valid filename.")
-
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
-
-    with open(output_file, mode='w', newline='') as file:
+# 이미지 이름과 각도를 CSV로 저장하는 함수
+def process_images_and_save_csv():
+    """이미지에서 각도를 계산하고 속도 40과 함께 CSV에 저장"""
+    with open(output_csv, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Image Name", "Average Angle"])
+        writer.writerow(["Image Name", "Average Angle", "Speed"])  # 헤더
 
-        processed_files = set()
-
-        for image_name in os.listdir(folder_path):
-            if image_name in processed_files:
-                continue
-
-            image_path = os.path.join(folder_path, image_name)
-            if os.path.isfile(image_path):
-                angle = calculate_angles(image_path)
-                writer.writerow([image_name, angle])
-                processed_files.add(image_name)
-                print(f"Processed {image_name}: {angle}")
+        for image_name in os.listdir(image_folder):
+            if image_name.endswith('.jpg'):
+                image_path = os.path.join(image_folder, image_name)
+                
+                # 각도 계산
+                angle = calculate_angle(image_path)
+                
+                if angle is not None:
+                    # 속도는 40으로 고정
+                    speed = 40
+                    writer.writerow([image_name, angle, speed])
+                    print(f"Processed {image_name}: Angle = {angle}, Speed = {speed}")
+                else:
+                    print(f"No lines detected in {image_name}")
 
 # 실행
 try:
-    process_images(image_folder, output_csv)
+    process_images_and_save_csv()
     print(f"Results saved to {output_csv}")
-except ValueError as e:
+except Exception as e:
     print(f"Error: {e}")
