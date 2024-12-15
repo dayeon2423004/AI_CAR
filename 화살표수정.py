@@ -7,8 +7,8 @@ import shutil
 
 # CSV 파일과 이미지 폴더 경로 설정
 output_csv = "C:\\Users\\USER\\Desktop\\output.csv"  # 결과를 저장할 CSV 파일 경로
-image_folder = "C:\\Users\\USER\\Desktop\\sorted_images"  # 이미지가 있는 폴더 경로
-output_copy_folder = "C:\\Users\\USER\\Desktop\\copy"  # 이미지 복사본 폴더 경로
+image_folder = "C:\\Users\\USER\\Desktop\\copy"  # 이미지가 있는 폴더 경로
+output_copy_folder = "C:\\Users\\USER\\Desktop\\copy_with"  # 이미지 복사본 폴더 경로
 
 def visualize_directions(csv_file, image_folder, copy_folder):
     """CSV에 저장된 각도를 기준으로 복사된 이미지에 화살표를 그려 저장."""

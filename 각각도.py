@@ -5,7 +5,7 @@ import csv
 import math
 
 # 경로 설정
-image_folder = "C:\\Users\\USER\\Desktop\\120"  # 원본 이미지 폴더
+image_folder = "C:\\Users\\USER\\Desktop\\cropped_images"  # 원본 이미지 폴더
 output_csv = "C:\\Users\\USER\\Desktop\\output1.csv"  # 결과 저장 CSV 파일 경로
 
 # 이미지에서 직선의 각도를 계산하는 함수 (30도 단위로 계산)
@@ -18,16 +18,20 @@ def calculate_angle(image_path):
     
     # 이미지를 회색조로 변환
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
+
+    # ROI 설정: 중앙 부분만 사용
+    height, width = gray.shape
+    roi = gray[int(height * 0.4):int(height * 0.6), :]  # 중앙 20% 영역
+
     # Gaussian 블러 적용
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    blurred = cv2.GaussianBlur(roi, (5, 5), 0)
 
     # 엣지 검출
     edges = cv2.Canny(blurred, 50, 150, apertureSize=3)
-    
+
     # Hough 변환으로 직선 검출 (HoughLinesP 사용)
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=100, minLineLength=50, maxLineGap=10)
-    
+
     angles = []
     if lines is not None:
         for x1, y1, x2, y2 in lines[:, 0]:
@@ -35,7 +39,7 @@ def calculate_angle(image_path):
             angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
             angle = angle % 180  # 0 ~ 180도 범위로 조정
             angles.append(angle)
-    
+
     # 평균 각도 계산 후 30도 단위로 반올림
     if angles:
         mean_angle = np.mean(angles)

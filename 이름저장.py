@@ -2,8 +2,8 @@ import os
 import csv
 
 # 경로 설정
-image_folder = "C:\\Users\\USER\\Desktop\\copy"  # 원본 이미지 폴더
-output_csv = "C:\\Users\\USER\\Desktop\\output.csv"  # CSV 파일 경로
+image_folder = "C:\\Users\\USER\\Desktop\\sorted_images"  # 원본 이미지 폴더
+output_csv = "C:\\Users\\USER\\Desktop\\output1.csv"  # CSV 파일 경로
 
 # CSV 파일 읽기
 def rename_images_based_on_csv():
