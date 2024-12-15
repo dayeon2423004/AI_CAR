@@ -5,8 +5,8 @@ import os
 import csv
 
 # 폴더 내 모든 이미지의 각도를 계산하고 CSV에 저장
-image_folder = "/home/kimdayeon/Desktop/clean"  # 이미지가 있는 폴더 경로
-output_csv = "/home/kimdayeon/Desktop/angles.csv"  # 결과를 저장할 CSV 파일 경로
+image_folder = "C:\\Users\\USER\\Desktop\\processed_images"  # 이미지가 있는 폴더 경로
+output_csv = "C:\\Users\\USER\\Desktop\\output1.csv"  # 결과를 저장할 CSV 파일 경로
 
 def calculate_angles(image_path):
     """이미지에서 직선을 검출하고 각도를 계산."""

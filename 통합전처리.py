@@ -10,7 +10,7 @@ import pandas as pd
 # 경로 설정
 image_folder = "C:\\Users\\USER\\Desktop\\sorted_images"  # 원본 이미지 폴더
 output_folder = "C:\\Users\\USER\\Desktop\\전처리 완료 폴더2"  # 결과 저장 폴더
-output_csv = "C:\\Users\\USER\\Desktop.csv"  # CSV 파일 경로
+output_csv = "C:\\Users\\USER\\Desktop\\output.csv"  # CSV 파일 경로
 save_folder = "C:\\Users\\USER\\Desktop\\전처리 완료 폴더"  # 이름 변경된 이미지 저장 폴더
 
 # 결과 저장 폴더가 없으면 생성
@@ -45,35 +45,6 @@ def preprocess_image(image_path):
     
     return mask_cleaned, image
 
-# 이미지 각도 계산 함수
-def calculate_angles(image_path):
-    """이미지에서 직선을 검출하고 각도를 계산."""
-    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    if img is None:
-        return None
-
-    # 엣지 감지 (Canny Edge Detection)
-    edges = cv2.Canny(img, 50, 150, apertureSize=3)
-
-    # 허프 변환을 이용한 직선 검출
-    lines = cv2.HoughLines(edges, 1, np.pi / 180, 100)
-
-    angles = []
-    if lines is not None:
-        for rho, theta in lines[:, 0]:
-            # 각도를 계산 (라디안을 도로 변환)
-            angle = math.degrees(theta)
-            angle = angle % 180
-            angles.append(angle)
-
-    # 평균 각도 계산 및 90도 추가
-    if angles:
-        mean_angle = np.mean(angles)
-        rounded_angle = round(mean_angle / 20) * 20
-        adjusted_angle = (rounded_angle + 90) % 180  # 90도 추가
-        return adjusted_angle
-    return None
-
 # 이미지 전처리 및 각도 계산 후 CSV 저장
 def process_images_and_save_csv():
     """이미지를 전처리하고 각도 및 속도를 계산하여 CSV에 저장."""
@@ -90,15 +61,13 @@ def process_images_and_save_csv():
                 # JPEG 압축을 85% 품질로 적용하여 저장
                 cv2.imwrite(output_path, mask_cleaned, [cv2.IMWRITE_JPEG_QUALITY, 85])
 
-                # 각도 계산
-                angle = calculate_angles(image_path)
+                # 각도 계산 (0도에서 180도까지 30도 간격으로)
+                angles = list(range(0, 181, 30))
                 speed = 40  # 속도는 40으로 고정
 
-                if angle is not None:
+                for angle in angles:
                     writer.writerow([base_filename, angle, speed])
                     print(f"Processed {base_filename}: Angle = {angle}, Speed = {speed}")
-                else:
-                    print(f"{base_filename}에서 각도를 계산할 수 없습니다.")
 
 # 이미지 이름 변경 및 저장 (모폴로지 연산 후 이미지)
 def rename_images_with_metadata():

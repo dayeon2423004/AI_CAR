@@ -4,22 +4,18 @@ import glob
 import os
 
 # 이미지 파일 경로 리스트
-image_paths = glob.glob('/home/kimdayeon/Desktop/데이터셋/*.jpg')
+image_paths = glob.glob("C:\\Users\\USER\\Desktop\\sorted_images\\*.jpg")
+
 output_folder = 'output_images'  # 결과를 저장할 기본 폴더
 
 # 결과 저장 폴더가 없으면 생성
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
-# 각 마스크 및 결과 이미지를 저장할 폴더 생성
+# 마스크 저장 폴더 생성
 mask_folder = os.path.join(output_folder, 'Masks')
-cleaned_mask_folder = os.path.join(output_folder, 'Cleaned_Masks')
-final_mask_folder = os.path.join(output_folder, 'Final_Masks')
-result_folder = os.path.join(output_folder, 'Results')
-
-for folder in [mask_folder, cleaned_mask_folder, final_mask_folder, result_folder]:
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+if not os.path.exists(mask_folder):
+    os.makedirs(mask_folder)
 
 for image_path in image_paths:
     # 이미지 로드
@@ -60,15 +56,8 @@ for image_path in image_paths:
             if y + h >= y_threshold and (aspect_ratio < 0.5 or aspect_ratio > 2.0):
                 cv2.drawContours(mask_final, [contour], -1, (255), thickness=cv2.FILLED)
 
-    # 최종 마스크 적용
-    result = cv2.bitwise_and(image, image, mask=mask_final)
-
-    # 각 이미지 저장
+    # 최종 마스크 저장
     base_filename = os.path.basename(image_path)
-    cv2.imwrite(os.path.join(mask_folder, base_filename), mask)
-    cv2.imwrite(os.path.join(cleaned_mask_folder, base_filename), mask_cleaned)
-    cv2.imwrite(os.path.join(final_mask_folder, base_filename), mask_final)
-    cv2.imwrite(os.path.join(result_folder, base_filename), result)
+    cv2.imwrite(os.path.join(mask_folder, base_filename), mask_final)
 
-# 모든 창 닫기 (필요 없음, imshow가 없으므로)
-# cv2.destroyAllWindows()  # 이 줄은 필요하지 않습니다.
+print("모든 마스크가 저장되었습니다.")
