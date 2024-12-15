@@ -93,4 +93,8 @@ for epoch in range(epochs):
 # 모델 저장
 model_save_path = "C:\\Users\\USER\\Desktop\\angle_prediction_model.pth"
 torch.save(model.state_dict(), model_save_path)
+<<<<<<< HEAD
 print(f"모델이 저장되었습니다: {model_save_path}")
+=======
+print(f"모델이 저장되었습니다: {model_save_path}")
+>>>>>>> b4863c8fc13630380a6d32841103daa2c27703eb
